@@ -63,7 +63,7 @@ PIDController::PIDController(float tau, float Ts, float limit)
 	// nothing else to do
 }
 
-PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool flag)
+float PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool flag)
 {
 	float error = y_c - y;
 	integrator_ += (Ts_/2)*(error + error_d1_);
