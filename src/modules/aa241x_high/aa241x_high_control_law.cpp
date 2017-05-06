@@ -54,6 +54,47 @@ using namespace aa241x_high;
 float altitude_desired = 0.0f;
 
 /**
+ * PIDController class
+ */
+PIDController::PIDController(float tau, float Ts, float limit)
+	: integrator_(0), differentiator_(0), error_d1_(0),
+	  tau_(tau), Ts_(Ts), limit_(limit)
+{
+	// nothing else to do
+}
+
+PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool flag)
+{
+	float error = y_c - y;
+	integrator_ += (Ts_/2)*(error + error_d1_);
+	differentiator_ = (2*tau_ - Ts_)/(2*tau_ + Ts_) * differentiator_
+										+ 2/(2*tau_ + Ts_)*(error - error_d1_);
+	error_d1_ = error
+
+	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_
+	float u = sat(u_unsat)
+
+	// anti windup
+	if (ki != 0) {
+		integrator_ += Ts_/ki * (u - u_unsat)
+	}
+
+	return u
+}
+
+float PIDController::sat(float x) {
+	if (x > limit_) {
+		return limit_
+	} else if (x < -limit_) {
+		return -limit_
+	} else {
+		return x
+	}
+}
+
+pitch_controller = PIDController(1.0f, 0.017f, 1.0f);
+
+/**
  * Main function in which your code should be written.
  *
  * This is the only function that is executed at a set interval,
@@ -62,11 +103,8 @@ float altitude_desired = 0.0f;
  */
 void flight_control() {
 
-	float my_float_variable = 0.0f;		/**< example float variable */
-
-
 	// An example of how to run a one time 'setup' for example to lock one's altitude and heading...
-	if (hrt_absolute_time() - previous_loop_timestamp > 500000.0f) { // Run if more than 0.5 seconds have passes since last loop, 
+	if (hrt_absolute_time() - previous_loop_timestamp > 500000.0f) { // Run if more than 0.5 seconds have passes since last loop,
 																	 //	should only occur on first engagement since this is 59Hz loop
 		yaw_desired = yaw; 							// yaw_desired already defined in aa241x_high_aux.h
 		altitude_desired = position_D_baro; 		// altitude_desired needs to be declared outside flight_control() function
@@ -74,39 +112,19 @@ void flight_control() {
 
 
 	// TODO: write all of your flight control here...
-
+  pitch_desired = 0;
+	kp = aah_params.k_elev_d;
+	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp, 0, 0, false);
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;
 
-	// setting high data value example
-	high_data.field1 = my_float_variable;
-
-
-	// // Make a really simple proportional roll stabilizer // //
-	//
-	
-	roll_desired = 0.0f; // roll_desired already exists in aa241x_high_aux so no need to repeat float declaration
-
-	// Now use your parameter gain and multiply by the error from desired
-	float proportionalRollCorrection = aah_parameters.proportional_roll_gain * (roll - roll_desired);
-
-	// Note the use of x.0f, this is important to specify that these are single and not double float values!
-
-	// Do bounds checking to keep the roll correction within the -1..1 limits of the servo output
-	if (proportionalRollCorrection > 1.0f) {
-		proportionalRollCorrection = 1.0f;
-	} else if (proportionalRollCorrection < -1.0f ) {
-		proportionalRollCorrection = -1.0f;
-	}
 
 	// ENSURE THAT YOU SET THE SERVO OUTPUTS!!!
 	// outputs should be set to values between -1..1 (except throttle is 0..1)
 	// where zero is no actuation, and -1,1 are full throw in either the + or - directions
 
-	// Set output of roll servo to the control law output calculated above
-	roll_servo_out = proportionalRollCorrection;		
-	// as an example, just passing through manual control to everything but roll
+	roll_servo_out = man_roll_in;
 	pitch_servo_out = -man_pitch_in;
 	yaw_servo_out = man_yaw_in;
 	throttle_servo_out = man_throttle_in;

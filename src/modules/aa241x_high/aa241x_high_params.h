@@ -60,7 +60,20 @@ extern "C" {
  */
 struct aah_params {
 
-	float example_high_param;
+	// Throttle loop
+	float k_throttle_p;
+	float k_throttle_i;
+	// Pitch loop
+	float k_elev_p;
+	float k_elev_d;
+	// Altitude loop
+	float k_alt_p;
+	float k_alt_i;
+	// Airspeed loop
+	float k_vel_p;
+	float k_vel_i;
+
+
 	float proportional_roll_gain;
 
 	// TODO: add custom parameter variable names here......
@@ -79,7 +92,19 @@ struct aah_params {
  */
 struct aah_param_handles {
 
-	param_t example_high_param;
+	// Throttle loop
+	param_t k_throttle_p;
+	param_t k_throttle_i;
+	// Pitch loop
+	param_t k_elev_p;
+	param_t k_elev_d;
+	// Altitude loop
+	param_t k_alt_p;
+	param_t k_alt_i;
+	// Airspeed loop
+	param_t k_vel_p;
+	param_t k_vel_i;
+
 	param_t proportional_roll_gain;
 
 	// TODO: add custom parameter variable names here.......

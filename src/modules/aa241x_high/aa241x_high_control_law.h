@@ -61,6 +61,22 @@
 #include <mathlib/mathlib.h>
 
 // TODO: write your function prototypes here
+class PIDController
+{
+  float integrator_;
+  float differentiator_;
+  float error_d1_;
+
+  float tau_; // differentiator constant
+  float Ts_;
+  float limit_;
+
+public:
+  PIDController(float tau, float Ts, float limit);
+
+  float tick(float y_c, float y, float kp, float ki, float kd, bool flag);
+  float sat(float x);
+};
 
 
 
