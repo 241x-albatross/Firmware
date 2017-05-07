@@ -49,17 +49,30 @@
  *
  */
 
+// /**
+//  * This is an example parameter.  The name of the parameter in QGroundControl
+//  * will be AAH_EXAMPLE and will be in the AAH dropdown.  Make sure to always
+//  * start your parameters with AAH to have them all in one place.
+//  *
+//  * The default value of this float parameter will be 10.0.
+//  *
+//  * @unit meter 						(the unit attribute (not required, just helps for sanity))
+//  * @group AA241x High Params		(always include this)
+//  */
+// PARAM_DEFINE_FLOAT(AAH_EXAMPLE, 10.0f);
+
+
+
 /**
- * This is an example parameter.  The name of the parameter in QGroundControl
- * will be AAH_EXAMPLE and will be in the AAH dropdown.  Make sure to always
- * start your parameters with AAH to have them all in one place.
+ * Proportional gain for the pitch controller.
  *
- * The default value of this float parameter will be 10.0.
+ * The default value of this float parameter will be 0.01.
  *
- * @unit meter 						(the unit attribute (not required, just helps for sanity))
+ * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
-PARAM_DEFINE_FLOAT(AAH_EXAMPLE, 10.0f);
+ PARAM_DEFINE_FLOAT(AAH_PITCHPROPGAIN, 0.01)
+
 
 /**
  * This is an example parameter.  The name of the parameter in QGroundControl
@@ -86,7 +99,8 @@ int aah_parameters_init(struct aah_param_handles *h)
 	 * NOTE: the string passed to param_find is the same as the name provided
 	 * in the above PARAM_DEFINE_FLOAT
 	 */
-	h->example_high_param		= param_find("AAH_EXAMPLE");
+	//h->example_high_param		= param_find("AAH_EXAMPLE");
+	h->k_elev_p = param_find("AAH_PITCHPROPGAIN");
 	h->proportional_roll_gain 	= param_find("AAH_PROPROLLGAIN");
 
 	// TODO: add the above line for each of your custom parameters........
@@ -99,7 +113,8 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
 
 	// for each of your custom parameters, make sure to add this line with
 	// the corresponding variable name
-	param_get(h->example_high_param, &(p->example_high_param));
+	//param_get(h->example_high_param, &(p->example_high_param));
+	param_get(h->k_elev_p, &(p->k_elev_p));
 	param_get(h->proportional_roll_gain, &(p->proportional_roll_gain));
 
 	// TODO: add the above line for each of your custom parameters.....

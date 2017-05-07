@@ -69,30 +69,30 @@ float PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool
 	integrator_ += (Ts_/2)*(error + error_d1_);
 	differentiator_ = (2*tau_ - Ts_)/(2*tau_ + Ts_) * differentiator_
 										+ 2/(2*tau_ + Ts_)*(error - error_d1_);
-	error_d1_ = error
+	error_d1_ = error;
 
-	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_
-	float u = sat(u_unsat)
+	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_;
+	float u = sat(u_unsat);
 
 	// anti windup
-	if (ki != 0) {
-		integrator_ += Ts_/ki * (u - u_unsat)
+	if (abs(ki) > 1e-7) {
+		integrator_ += Ts_/ki * (u - u_unsat);
 	}
 
-	return u
+	return u;
 }
 
 float PIDController::sat(float x) {
 	if (x > limit_) {
-		return limit_
+		return limit_;
 	} else if (x < -limit_) {
-		return -limit_
+		return -limit_;
 	} else {
-		return x
+		return x;
 	}
 }
 
-pitch_controller = PIDController(1.0f, 0.017f, 1.0f);
+PIDController pitch_controller(1.0f, 0.017f, 1.0f);
 
 /**
  * Main function in which your code should be written.
@@ -113,7 +113,7 @@ void flight_control() {
 
 	// TODO: write all of your flight control here...
   pitch_desired = 0;
-	kp = aah_params.k_elev_d;
+	float kp = aah_parameters.k_elev_d;
 	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp, 0, 0, false);
 
 	// getting low data value example
