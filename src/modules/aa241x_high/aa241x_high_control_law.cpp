@@ -58,7 +58,14 @@ float altitude_desired = 0.0f;
  */
 PIDController::PIDController(float tau, float Ts, float limit)
 	: integrator_(0), differentiator_(0), error_d1_(0),
-	  tau_(tau), Ts_(Ts), limit_(limit)
+	  tau_(tau), Ts_(Ts), upper_limit_(limit), lower_limit_(-limit)
+{
+	// nothing else to do
+}
+
+PIDController::PIDController(float tau, float Ts, float lower, float upper)
+	: integrator_(0), differentiator_(0), error_d1_(0),
+	  tau_(tau), Ts_(Ts), upper_limit_(upper), lower_limit_(lower)
 {
 	// nothing else to do
 }
@@ -83,16 +90,23 @@ float PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool
 }
 
 float PIDController::sat(float x) {
-	if (x > limit_) {
-		return limit_;
-	} else if (x < -limit_) {
-		return -limit_;
+	if (x > upper_limit_) {
+		return upper_limit_;
+	} else if (x < lower_limit_) {
+		return lower_limit_;
 	} else {
 		return x;
 	}
 }
 
-PIDController pitch_controller(1.0f, 0.017f, 1.0f);
+PIDController roll_controller(1.0f, 0.017f, 1.0f); // output = roll_servo
+PIDController course_controller(1.0f, 0.017f, 0.57f); // output = commanded roll
+PIDController sideslip_controller(1.0f, 0.017f, 1.0f); // output = yaw_servo
+PIDController throttle_controller(1.0f, 0.017f, 0.0f, 1.0f); // output = throttle_servo
+PIDController pitch_controller(1.0f, 0.017f, 1.0f); // output = pitch_servo
+PIDController alt_controller(1.0f, 0.017f, 0.57f); // output = commanded pitch
+
+
 
 /**
  * Main function in which your code should be written.
@@ -112,9 +126,16 @@ void flight_control() {
 
 
 	// TODO: write all of your flight control here...
-  pitch_desired = 0;
-	float kp = aah_parameters.k_elev_d;
-	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp, 0, 0, false);
+	// Testing only the pitch controller
+	pitch_desired = -man_pitch_in;
+	float kp_pitch = aah_parameters.k_elev_d;
+	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp_pitch, 0, 0, false);
+
+	// Testing only the roll controller
+	roll_desired = man_roll_in;
+	float kp_roll = aah_parameters.k_roll_p;
+	roll_servo_out = roll_controller.tick(roll_desired, roll, kp_roll, 0, 0, false);
+
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;
@@ -124,8 +145,8 @@ void flight_control() {
 	// outputs should be set to values between -1..1 (except throttle is 0..1)
 	// where zero is no actuation, and -1,1 are full throw in either the + or - directions
 
-	roll_servo_out = man_roll_in;
-	pitch_servo_out = -man_pitch_in;
+	// roll_servo_out = man_roll_in;
+	// pitch_servo_out = -man_pitch_in;
 	yaw_servo_out = man_yaw_in;
 	throttle_servo_out = man_throttle_in;
 }

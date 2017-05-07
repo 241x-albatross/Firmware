@@ -69,10 +69,12 @@ class PIDController
 
   float tau_; // differentiator constant
   float Ts_;
-  float limit_;
+  float upper_limit_;
+  float lower_limit_;
 
 public:
   PIDController(float tau, float Ts, float limit);
+  PIDController(float tau, float Ts, float lower, float upper);
 
   float tick(float y_c, float y, float kp, float ki, float kd, bool flag);
   float sat(float x);

@@ -61,7 +61,15 @@
 //  */
 // PARAM_DEFINE_FLOAT(AAH_EXAMPLE, 10.0f);
 
-
+/**
+ * Proportional gain for the throttle controller.
+ *
+ * The default value of this float parameter will be 0.01.
+ *
+ * @unit none 						(the unit attribute (not required, just helps for sanity))
+ * @group AA241x High Params		(always include this)
+ */
+ PARAM_DEFINE_FLOAT(AAH_THROTTLEPROPGAIN, 0.01)
 
 /**
  * Proportional gain for the pitch controller.
@@ -73,18 +81,45 @@
  */
  PARAM_DEFINE_FLOAT(AAH_PITCHPROPGAIN, 0.01)
 
+ /**
+  * Proportional gain for the altitude controller.
+  *
+  * The default value of this float parameter will be 0.01.
+  *
+  * @unit none 						(the unit attribute (not required, just helps for sanity))
+  * @group AA241x High Params		(always include this)
+  */
+  PARAM_DEFINE_FLOAT(AAH_ALTPROPGAIN, 0.01)
+
+	/**
+   * Proportional gain for the velocity controller.
+   *
+   * The default value of this float parameter will be 0.01.
+   *
+   * @unit none 						(the unit attribute (not required, just helps for sanity))
+   * @group AA241x High Params		(always include this)
+   */
+   PARAM_DEFINE_FLOAT(AAH_ROLLPROPGAIN, 0.01)
+
+ /**
+  * Proportional gain for the velocity controller.
+  *
+  * The default value of this float parameter will be 0.01.
+  *
+  * @unit none 						(the unit attribute (not required, just helps for sanity))
+  * @group AA241x High Params		(always include this)
+  */
+  PARAM_DEFINE_FLOAT(AAH_COURSEPROPGAIN, 0.01)
 
 /**
- * This is an example parameter.  The name of the parameter in QGroundControl
- * will be AAH_PROPROLLGAIN and will be in the AAH dropdown.  Make sure to always
- * start your parameters with AAH to have them all in one place.
+ * Proportional gain for the velocity controller.
  *
- * The default value of this float parameter will be 1.0.
+ * The default value of this float parameter will be 0.01.
  *
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
-PARAM_DEFINE_FLOAT(AAH_PROPROLLGAIN, 1.0f);
+ PARAM_DEFINE_FLOAT(AAH_SIDESLIPPROPGAIN, 0.01)
 
 // TODO: define custom parameters here
 
@@ -100,8 +135,12 @@ int aah_parameters_init(struct aah_param_handles *h)
 	 * in the above PARAM_DEFINE_FLOAT
 	 */
 	//h->example_high_param		= param_find("AAH_EXAMPLE");
+	h->k_throttle_p = param_find("AAH_THROTTLEPROPGAIN");
 	h->k_elev_p = param_find("AAH_PITCHPROPGAIN");
-	h->proportional_roll_gain 	= param_find("AAH_PROPROLLGAIN");
+	h->k_alt_p = param_find("AAH_ALTPROPGAIN");
+	h->k_roll_p = param_find("AAH_ROLLPROPGAIN");
+	h->k_course_p 	= param_find("AAH_COURSEPROPGAIN");
+  h->k_sideslip_p 	= param_find("AAH_SIDESLIPPROPGAIN");
 
 	// TODO: add the above line for each of your custom parameters........
 
@@ -114,8 +153,12 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
 	// for each of your custom parameters, make sure to add this line with
 	// the corresponding variable name
 	//param_get(h->example_high_param, &(p->example_high_param));
+	param_get(h->k_throttle_p, &(p->k_throttle_p));
 	param_get(h->k_elev_p, &(p->k_elev_p));
-	param_get(h->proportional_roll_gain, &(p->proportional_roll_gain));
+	param_get(h->k_alt_p, &(p->k_alt_p));
+	param_get(h->k_roll_p, &(p->k_roll_p));
+	param_get(h->k_course_p, &(p->k_course_p));
+  param_get(h->k_sideslip_p, &(p->k_sideslip_p));
 
 	// TODO: add the above line for each of your custom parameters.....
 
