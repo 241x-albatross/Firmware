@@ -69,7 +69,7 @@
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
- PARAM_DEFINE_FLOAT(AAH_THROTTLEPROPGAIN, 0.01)
+ PARAM_DEFINE_FLOAT(AAH_THROTPROP, 0.821f)
 
 /**
  * Proportional gain for the pitch controller.
@@ -79,7 +79,7 @@
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
- PARAM_DEFINE_FLOAT(AAH_PITCHPROPGAIN, 0.01)
+ PARAM_DEFINE_FLOAT(AAH_PITCHPROP, 1.00f)
 
  /**
   * Proportional gain for the altitude controller.
@@ -89,7 +89,7 @@
   * @unit none 						(the unit attribute (not required, just helps for sanity))
   * @group AA241x High Params		(always include this)
   */
-  PARAM_DEFINE_FLOAT(AAH_ALTPROPGAIN, 0.01)
+  PARAM_DEFINE_FLOAT(AAH_ALTPROP, 0.02f)
 
 	/**
    * Proportional gain for the velocity controller.
@@ -99,7 +99,7 @@
    * @unit none 						(the unit attribute (not required, just helps for sanity))
    * @group AA241x High Params		(always include this)
    */
-   PARAM_DEFINE_FLOAT(AAH_ROLLPROPGAIN, 0.01)
+   PARAM_DEFINE_FLOAT(AAH_ROLLPROP, 0.01)
 
  /**
   * Proportional gain for the velocity controller.
@@ -109,7 +109,7 @@
   * @unit none 						(the unit attribute (not required, just helps for sanity))
   * @group AA241x High Params		(always include this)
   */
-  PARAM_DEFINE_FLOAT(AAH_COURSEPROPGAIN, 0.01)
+  PARAM_DEFINE_FLOAT(AAH_COURSEPROP, 0.01)
 
 /**
  * Proportional gain for the velocity controller.
@@ -119,7 +119,7 @@
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
- PARAM_DEFINE_FLOAT(AAH_SIDESLIPPROPGAIN, 0.01)
+ PARAM_DEFINE_FLOAT(AAH_SLIPPROP, 0.01)
 
 // TODO: define custom parameters here
 
@@ -135,12 +135,12 @@ int aah_parameters_init(struct aah_param_handles *h)
 	 * in the above PARAM_DEFINE_FLOAT
 	 */
 	//h->example_high_param		= param_find("AAH_EXAMPLE");
-	h->k_throttle_p = param_find("AAH_THROTTLEPROPGAIN");
-	h->k_elev_p = param_find("AAH_PITCHPROPGAIN");
-	h->k_alt_p = param_find("AAH_ALTPROPGAIN");
-	h->k_roll_p = param_find("AAH_ROLLPROPGAIN");
-	h->k_course_p 	= param_find("AAH_COURSEPROPGAIN");
-  h->k_sideslip_p 	= param_find("AAH_SIDESLIPPROPGAIN");
+	h->k_throttle_p = param_find("AAH_THROTPROP");
+	h->k_elev_p = param_find("AAH_PITCHPROP");
+	h->k_alt_p = param_find("AAH_ALTPROP");
+	h->k_roll_p = param_find("AAH_ROLLPROP");
+	h->k_course_p 	= param_find("AAH_COURSEPROP");
+  h->k_sideslip_p 	= param_find("AAH_SLIPPROP");
 
 	// TODO: add the above line for each of your custom parameters........
 

@@ -104,7 +104,7 @@ PIDController course_controller(1.0f, 0.017f, 0.57f); // output = commanded roll
 PIDController sideslip_controller(1.0f, 0.017f, 1.0f); // output = yaw_servo
 PIDController throttle_controller(1.0f, 0.017f, 0.0f, 1.0f); // output = throttle_servo
 PIDController pitch_controller(1.0f, 0.017f, 1.0f); // output = pitch_servo
-PIDController alt_controller(1.0f, 0.017f, 0.57f); // output = commanded pitch
+PIDController altitude_controller(1.0f, 0.017f, 0.57f); // output = commanded pitch
 
 
 
@@ -126,16 +126,25 @@ void flight_control() {
 
 
 	// TODO: write all of your flight control here...
-	// Testing only the pitch controller
+	// throtttle controller
+	// float vel_desired = 20.0f*man_throttle_in;
+	// float k_vel_p = aah_parameters.k_vel_p;
+	// throttle_servo_out = throttle_controller.tick(vel_desired, ground_speed, k_vel_p, 0, 0, false);
+
+	// altitude controller
+	// float k_alt_p = aah_parameters.k_alt_p;
+	// pitch_desired = altitude_controller.tick(altitude_desired, position_D_baro, k_alt_p, 0, 0, false);
+
+
+	// pitch controller
 	pitch_desired = -man_pitch_in;
-	float kp_pitch = aah_parameters.k_elev_d;
+	float kp_pitch = aah_parameters.k_elev_p;
 	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp_pitch, 0, 0, false);
 
 	// Testing only the roll controller
 	roll_desired = man_roll_in;
 	float kp_roll = aah_parameters.k_roll_p;
 	roll_servo_out = roll_controller.tick(roll_desired, roll, kp_roll, 0, 0, false);
-
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;

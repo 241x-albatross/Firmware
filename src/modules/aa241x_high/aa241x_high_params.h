@@ -62,26 +62,26 @@ struct aah_params {
 
 	// Throttle loop
 	float k_throttle_p;
-	float k_throttle_i;
+	// float k_throttle_i;
 	// Pitch loop
 	float k_elev_p;
-	float k_elev_d;
+	// float k_elev_d;
 	// Altitude loop
 	float k_alt_p;
-	float k_alt_i;
+	// float k_alt_i;
 	// Airspeed loop
 	float k_vel_p;
-	float k_vel_i;
+	// float k_vel_i;
 
 	// Roll loop
 	float k_roll_p;
-	float k_roll_i;
+	// float k_roll_i;
 	// Course loop
 	float k_course_p;
-	float k_course_i;
+	// float k_course_i;
 	// Sideslip loop
 	float k_sideslip_p;
-	float k_sideslip_i;
+	// float k_sideslip_i;
 
 	// TODO: add custom parameter variable names here......
 
@@ -101,23 +101,23 @@ struct aah_param_handles {
 
 	// Throttle loop
 	param_t k_throttle_p;
-	param_t k_throttle_i;
+	// param_t k_throttle_i;
 	// Pitch loop
 	param_t k_elev_p;
-	param_t k_elev_d;
+	// param_t k_elev_d;
 	// Altitude loop
 	param_t k_alt_p;
-	param_t k_alt_i;
+	// param_t k_alt_i;
 
 	// Roll loop
 	param_t k_roll_p;
-	param_t k_roll_i;
+	// param_t k_roll_i;
 	// Course loop
 	param_t k_course_p;
-	param_t k_course_i;
+	// param_t k_course_i;
 	// Sideslip loop
 	param_t k_sideslip_p;
-	param_t k_sideslip_i;
+	// param_t k_sideslip_i;
 
 
 	// TODO: add custom parameter variable names here.......
