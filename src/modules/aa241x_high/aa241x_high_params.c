@@ -69,7 +69,7 @@
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
- PARAM_DEFINE_FLOAT(AAH_THROTPROP, 0.821f)
+ PARAM_DEFINE_FLOAT(AAH_THROTPROP, 0.821f);
 
 /**
  * Proportional gain for the pitch controller.
@@ -79,7 +79,7 @@
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
- PARAM_DEFINE_FLOAT(AAH_PITCHPROP, 1.00f)
+ PARAM_DEFINE_FLOAT(AAH_PITCHPROP, 1.00f);
 
  /**
   * Proportional gain for the altitude controller.
@@ -89,7 +89,7 @@
   * @unit none 						(the unit attribute (not required, just helps for sanity))
   * @group AA241x High Params		(always include this)
   */
-  PARAM_DEFINE_FLOAT(AAH_ALTPROP, 0.02f)
+  PARAM_DEFINE_FLOAT(AAH_ALTPROP, 0.02f);
 
 	/**
    * Proportional gain for the velocity controller.
@@ -99,7 +99,7 @@
    * @unit none 						(the unit attribute (not required, just helps for sanity))
    * @group AA241x High Params		(always include this)
    */
-   PARAM_DEFINE_FLOAT(AAH_ROLLPROP, 0.01)
+   PARAM_DEFINE_FLOAT(AAH_ROLLPROP, 0.01);
 
  /**
   * Proportional gain for the velocity controller.
@@ -109,7 +109,7 @@
   * @unit none 						(the unit attribute (not required, just helps for sanity))
   * @group AA241x High Params		(always include this)
   */
-  PARAM_DEFINE_FLOAT(AAH_COURSEPROP, 0.01)
+  PARAM_DEFINE_FLOAT(AAH_COURSEPROP, 0.01);
 
 /**
  * Proportional gain for the velocity controller.
@@ -119,7 +119,7 @@
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
- PARAM_DEFINE_FLOAT(AAH_SLIPPROP, 0.01)
+ PARAM_DEFINE_FLOAT(AAH_SLIPPROP, 0.01);
 
 // TODO: define custom parameters here
 

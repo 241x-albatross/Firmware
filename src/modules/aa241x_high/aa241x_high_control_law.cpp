@@ -137,14 +137,14 @@ void flight_control() {
 
 
 	// pitch controller
-	pitch_desired = -man_pitch_in;
+	pitch_desired = man_pitch_in;
 	float kp_pitch = aah_parameters.k_elev_p;
 	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp_pitch, 0, 0, false);
 
-	// Testing only the roll controller
-	roll_desired = man_roll_in;
+	// roll controller
+	roll_desired = -man_roll_in;
 	float kp_roll = aah_parameters.k_roll_p;
-	roll_servo_out = roll_controller.tick(roll_desired, roll, kp_roll, 0, 0, false);
+	roll_servo_out = roll_controller.tick(roll_desired, roll, -kp_roll, 0, 0, false);
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;
