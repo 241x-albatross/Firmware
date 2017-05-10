@@ -132,19 +132,30 @@ void flight_control() {
 	// throttle_servo_out = throttle_controller.tick(vel_desired, ground_speed, k_vel_p, 0, 0, false);
 
 	// altitude controller
-	// float k_alt_p = aah_parameters.k_alt_p;
-	// pitch_desired = altitude_controller.tick(altitude_desired, position_D_baro, k_alt_p, 0, 0, false);
-
+	if (aah_parameters.alt_des < -0.5f) {
+		altitude_desired = aah_parameters.alt_des;
+	}
+	float k_alt_p = aah_parameters.k_alt_p;
+	pitch_desired = altitude_controller.tick(altitude_desired, position_D_baro, k_alt_p, 0, 0, false);
 
 	// pitch controller
-	pitch_desired = man_pitch_in;
+	// pitch_desired = 0.75f*man_pitch_in;
 	float kp_pitch = aah_parameters.k_elev_p;
 	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp_pitch, 0, 0, false);
 
+
+	// course controller
+	float kp_course = aah_parameters.k_course_p;
+	roll_desired = course_controller.tick(yaw_desired, yaw, kp_course, 0, 0, false);
+
 	// roll controller
-	roll_desired = -man_roll_in;
+	// roll_desired = -0.75f*man_roll_in;
 	float kp_roll = aah_parameters.k_roll_p;
-	roll_servo_out = roll_controller.tick(roll_desired, roll, -kp_roll, 0, 0, false);
+	roll_servo_out = -roll_controller.tick(roll_desired, roll, kp_roll, 0, 0, false);
+
+	// sideslip controller
+	float kp_slip = aah_parameters.k_sideslip_p;
+	yaw_servo_out = sideslip_controller.tick(0, speed_body_v, kp_slip, 0, 0, false);
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;

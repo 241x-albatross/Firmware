@@ -83,6 +83,9 @@ struct aah_params {
 	float k_sideslip_p;
 	// float k_sideslip_i;
 
+	// desired altitude
+	float alt_des;
+
 	// TODO: add custom parameter variable names here......
 
 };
@@ -118,6 +121,9 @@ struct aah_param_handles {
 	// Sideslip loop
 	param_t k_sideslip_p;
 	// param_t k_sideslip_i;
+
+	// desired altitude
+	param_t alt_des;
 
 
 	// TODO: add custom parameter variable names here.......

@@ -79,7 +79,7 @@
  * @unit none 						(the unit attribute (not required, just helps for sanity))
  * @group AA241x High Params		(always include this)
  */
- PARAM_DEFINE_FLOAT(AAH_PITCHPROP, 1.00f);
+ PARAM_DEFINE_FLOAT(AAH_PITCHPROP, 3.00f);
 
  /**
   * Proportional gain for the altitude controller.
@@ -99,7 +99,7 @@
    * @unit none 						(the unit attribute (not required, just helps for sanity))
    * @group AA241x High Params		(always include this)
    */
-   PARAM_DEFINE_FLOAT(AAH_ROLLPROP, 0.01);
+   PARAM_DEFINE_FLOAT(AAH_ROLLPROP, 5.00);
 
  /**
   * Proportional gain for the velocity controller.
@@ -121,6 +121,16 @@
  */
  PARAM_DEFINE_FLOAT(AAH_SLIPPROP, 0.01);
 
+ /**
+  * Altitude to hold. Negative values are considered above ground.
+  *
+  * The default value of this float parameter will be 0.0.
+  *
+  * @unit none 						(the unit attribute (not required, just helps for sanity))
+  * @group AA241x High Params		(always include this)
+  */
+  PARAM_DEFINE_FLOAT(AAH_ALTDES, 0.0);
+
 // TODO: define custom parameters here
 
 
@@ -141,6 +151,7 @@ int aah_parameters_init(struct aah_param_handles *h)
 	h->k_roll_p = param_find("AAH_ROLLPROP");
 	h->k_course_p 	= param_find("AAH_COURSEPROP");
   h->k_sideslip_p 	= param_find("AAH_SLIPPROP");
+  h->alt_des = param_find("AAH_ALTDES");
 
 	// TODO: add the above line for each of your custom parameters........
 
@@ -159,6 +170,7 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
 	param_get(h->k_roll_p, &(p->k_roll_p));
 	param_get(h->k_course_p, &(p->k_course_p));
   param_get(h->k_sideslip_p, &(p->k_sideslip_p));
+  param_get(h->alt_des, &(p->alt_des));
 
 	// TODO: add the above line for each of your custom parameters.....
 
