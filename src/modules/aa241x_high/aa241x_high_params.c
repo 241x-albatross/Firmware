@@ -101,6 +101,16 @@
    */
    PARAM_DEFINE_FLOAT(AAH_ROLLPROP, 5.00);
 
+   /**
+    * Proportional gain for the velocity controller.
+    *
+    * The default value of this float parameter will be 0.01.
+    *
+    * @unit none 						(the unit attribute (not required, just helps for sanity))
+    * @group AA241x High Params		(always include this)
+    */
+    PARAM_DEFINE_FLOAT(AAH_ROLLOFF, 0.00);
+
  /**
   * Proportional gain for the velocity controller.
   *
@@ -149,6 +159,7 @@ int aah_parameters_init(struct aah_param_handles *h)
 	h->k_elev_p = param_find("AAH_PITCHPROP");
 	h->k_alt_p = param_find("AAH_ALTPROP");
 	h->k_roll_p = param_find("AAH_ROLLPROP");
+  h->roll_offset = param_find("AAH_ROLLOFF");
 	h->k_course_p 	= param_find("AAH_COURSEPROP");
   h->k_sideslip_p 	= param_find("AAH_SLIPPROP");
   h->alt_des = param_find("AAH_ALTDES");
@@ -168,6 +179,7 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
 	param_get(h->k_elev_p, &(p->k_elev_p));
 	param_get(h->k_alt_p, &(p->k_alt_p));
 	param_get(h->k_roll_p, &(p->k_roll_p));
+  param_get(h->roll_offset, &(p->roll_offset));
 	param_get(h->k_course_p, &(p->k_course_p));
   param_get(h->k_sideslip_p, &(p->k_sideslip_p));
   param_get(h->alt_des, &(p->alt_des));

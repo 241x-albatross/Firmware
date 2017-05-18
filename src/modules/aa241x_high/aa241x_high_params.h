@@ -75,6 +75,7 @@ struct aah_params {
 
 	// Roll loop
 	float k_roll_p;
+	float roll_offset;
 	// float k_roll_i;
 	// Course loop
 	float k_course_p;
@@ -114,6 +115,7 @@ struct aah_param_handles {
 
 	// Roll loop
 	param_t k_roll_p;
+	param_t roll_offset;
 	// param_t k_roll_i;
 	// Course loop
 	param_t k_course_p;

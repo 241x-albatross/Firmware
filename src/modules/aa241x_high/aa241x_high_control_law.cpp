@@ -52,6 +52,9 @@ using namespace aa241x_high;
 
 // define global variables (can be seen by all files in aa241x_high directory unless static keyword used)
 float altitude_desired = 0.0f;
+float vel_desired = 0.0f;
+
+const float PI = 3.1415927;
 
 /**
  * PIDController class
@@ -89,6 +92,24 @@ float PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool
 	return u;
 }
 
+float PIDController::tick(float error, float kp, float ki, float kd, bool flag)
+{
+	integrator_ += (Ts_/2)*(error + error_d1_);
+	differentiator_ = (2*tau_ - Ts_)/(2*tau_ + Ts_) * differentiator_
+										+ 2/(2*tau_ + Ts_)*(error - error_d1_);
+	error_d1_ = error;
+
+	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_;
+	float u = sat(u_unsat);
+
+	// anti windup
+	if (abs(ki) > 1e-7f) {
+		integrator_ += Ts_/ki * (u - u_unsat);
+	}
+
+	return u;
+}
+
 float PIDController::sat(float x) {
 	if (x > upper_limit_) {
 		return upper_limit_;
@@ -106,7 +127,15 @@ PIDController throttle_controller(1.0f, 0.017f, 0.0f, 1.0f); // output = throttl
 PIDController pitch_controller(1.0f, 0.017f, 1.0f); // output = pitch_servo
 PIDController altitude_controller(1.0f, 0.017f, 0.57f); // output = commanded pitch
 
-
+float normalizeAngle(float angleRad) {
+	while (angleRad > PI) {
+		angleRad -= 2*PI;
+	}
+	while (angleRad < -PI) {
+		angleRad += 2*PI;
+	}
+	return angleRad;
+}
 
 /**
  * Main function in which your code should be written.
@@ -122,14 +151,15 @@ void flight_control() {
 																	 //	should only occur on first engagement since this is 59Hz loop
 		yaw_desired = yaw; 							// yaw_desired already defined in aa241x_high_aux.h
 		altitude_desired = position_D_baro; 		// altitude_desired needs to be declared outside flight_control() function
+		vel_desired = ground_speed;
 	}
 
 
 	// TODO: write all of your flight control here...
 	// throtttle controller
 	// float vel_desired = 20.0f*man_throttle_in;
-	// float k_vel_p = aah_parameters.k_vel_p;
-	// throttle_servo_out = throttle_controller.tick(vel_desired, ground_speed, k_vel_p, 0, 0, false);
+	float k_vel_p = aah_parameters.k_throttle_p;
+	throttle_servo_out = throttle_controller.tick(vel_desired, ground_speed, k_vel_p, 0, 0, false);
 
 	// altitude controller
 	if (aah_parameters.alt_des < -0.5f) {
@@ -141,21 +171,26 @@ void flight_control() {
 	// pitch controller
 	// pitch_desired = 0.75f*man_pitch_in;
 	float kp_pitch = aah_parameters.k_elev_p;
-	pitch_servo_out = pitch_controller.tick(pitch_desired, pitch, kp_pitch, 0, 0, false);
+	float pitch_error = normalizeAngle(pitch_desired - pitch);
+	pitch_servo_out = pitch_controller.tick(pitch_error, kp_pitch, 0, 0, false);
 
 
 	// course controller
 	float kp_course = aah_parameters.k_course_p;
-	roll_desired = course_controller.tick(yaw_desired, yaw, kp_course, 0, 0, false);
+	float course_error = normalizeAngle(yaw_desired - ground_course);
+	roll_desired = course_controller.tick(course_error, kp_course, 0, 0, false);
 
 	// roll controller
 	// roll_desired = -0.75f*man_roll_in;
 	float kp_roll = aah_parameters.k_roll_p;
-	roll_servo_out = -roll_controller.tick(roll_desired, roll, kp_roll, 0, 0, false);
+	float roll_error = normalizeAngle(roll_desired - roll);
+	roll_servo_out = -roll_controller.tick(roll_error, kp_roll, 0, 0, false);
+	roll_servo_out = roll_controller.sat(roll_servo_out + aah_parameters.roll_offset);
 
 	// sideslip controller
 	float kp_slip = aah_parameters.k_sideslip_p;
-	yaw_servo_out = sideslip_controller.tick(0, speed_body_v, kp_slip, 0, 0, false);
+	float sideslip = speed_body_v / (ground_speed + 1e-5f);
+	yaw_servo_out = sideslip_controller.tick(0, sideslip, kp_slip, 0, 0, false);
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;
@@ -167,6 +202,6 @@ void flight_control() {
 
 	// roll_servo_out = man_roll_in;
 	// pitch_servo_out = -man_pitch_in;
-	yaw_servo_out = man_yaw_in;
-	throttle_servo_out = man_throttle_in;
+	// yaw_servo_out = man_yaw_in;
+	// throttle_servo_out = man_throttle_in;
 }
