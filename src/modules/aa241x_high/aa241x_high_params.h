@@ -86,6 +86,8 @@ struct aah_params {
 
 	// desired altitude
 	float alt_des;
+	// desired course
+	float course_des;
 
 	// TODO: add custom parameter variable names here......
 
@@ -126,6 +128,9 @@ struct aah_param_handles {
 
 	// desired altitude
 	param_t alt_des;
+
+	// desired course
+	param_t course_des;
 
 
 	// TODO: add custom parameter variable names here.......

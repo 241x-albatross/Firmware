@@ -165,9 +165,10 @@ void flight_control() {
 	if (aah_parameters.alt_des < -0.5f) {
 		altitude_desired = aah_parameters.alt_des;
 	}
+
 	float k_alt_p = aah_parameters.k_alt_p;
 	pitch_desired = altitude_controller.tick(altitude_desired, position_D_baro, k_alt_p, 0, 0, false);
-
+	high_data.field1 = pitch_desired;
 	// pitch controller
 	// pitch_desired = 0.75f*man_pitch_in;
 	float kp_pitch = aah_parameters.k_elev_p;
@@ -176,10 +177,13 @@ void flight_control() {
 
 
 	// course controller
+	if (aah_parameters.course_des > 0) {
+	  yaw_desired = aah_parameters.course_des;
+	}
 	float kp_course = aah_parameters.k_course_p;
 	float course_error = normalizeAngle(yaw_desired - ground_course);
 	roll_desired = course_controller.tick(course_error, kp_course, 0, 0, false);
-
+	high_data.field2 = roll_desired;
 	// roll controller
 	// roll_desired = -0.75f*man_roll_in;
 	float kp_roll = aah_parameters.k_roll_p;
@@ -190,11 +194,14 @@ void flight_control() {
 	// sideslip controller
 	float kp_slip = aah_parameters.k_sideslip_p;
 	float sideslip = speed_body_v / (ground_speed + 1e-5f);
+	high_data.field3 = sideslip;
 	yaw_servo_out = sideslip_controller.tick(0, sideslip, kp_slip, 0, 0, false);
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;
-
+	high_data.field4 = yaw_desired;
+	high_data.field5 = altitude_desired;
+	high_data.field6 = vel_desired;
 
 	// ENSURE THAT YOU SET THE SERVO OUTPUTS!!!
 	// outputs should be set to values between -1..1 (except throttle is 0..1)

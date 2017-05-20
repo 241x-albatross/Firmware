@@ -141,6 +141,16 @@
   */
   PARAM_DEFINE_FLOAT(AAH_ALTDES, 0.0);
 
+  /**
+   * Altitude to hold. Negative values are considered above ground.
+   *
+   * The default value of this float parameter will be 0.0.
+   *
+   * @unit none 						(the unit attribute (not required, just helps for sanity))
+   * @group AA241x High Params		(always include this)
+   */
+   PARAM_DEFINE_FLOAT(AAH_COURSEDES, -100.0);
+
 // TODO: define custom parameters here
 
 
@@ -163,6 +173,7 @@ int aah_parameters_init(struct aah_param_handles *h)
 	h->k_course_p 	= param_find("AAH_COURSEPROP");
   h->k_sideslip_p 	= param_find("AAH_SLIPPROP");
   h->alt_des = param_find("AAH_ALTDES");
+  h->course_des = param_find("AAH_COURSEDES");
 
 	// TODO: add the above line for each of your custom parameters........
 
@@ -183,6 +194,7 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
 	param_get(h->k_course_p, &(p->k_course_p));
   param_get(h->k_sideslip_p, &(p->k_sideslip_p));
   param_get(h->alt_des, &(p->alt_des));
+  param_get(h->course_des, &(p->course_des));
 
 	// TODO: add the above line for each of your custom parameters.....
 
