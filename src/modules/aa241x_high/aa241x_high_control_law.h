@@ -82,6 +82,34 @@ public:
   float sat(float x);
 };
 
+typedef struct {
+  float altitude;
+  float course;
+  float speed;
+} control_command_t;
+
+typedef struct {
+  float n;
+  float e;
+  float d;
+} ned_t;
+
+class PathFollower
+{
+  float start_n_;
+  float end_n_;
+  float start_e_;
+  float end_e_;
+  float start_h_;
+  float end_h_;
+
+  ned_t q_;
+  float chi_q_;
+public:
+  void setPath(float start_n, float start_e, float start_h, float end_n, float end_e, float end_h);
+  control_command_t tick(float n, float e, float h, float chi_inf, float k_path);
+};
+
 
 
 #endif /* AA241X_FW_CONTROL_MAIN_H_ */

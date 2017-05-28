@@ -120,12 +120,47 @@ float PIDController::sat(float x) {
 	}
 }
 
+PathFollower::PathFollower()
+	: start_n_(0), end_n_(0), start_e_(0), end_e_(0), start_h_(0), end_h_(0)
+{
+	// nothing to do
+}
+
+void PathFollower::setPath(float start_n, float start_e, float start_h, float end_n, float end_e, float end_h)
+{
+	start_n_ = start_n;
+	start_e_ = start_e;
+	start_h_ = start_h;
+
+	end_n_ = end_n;
+	end_e_ = end_e;
+	end_h_ = end_h;
+
+	q_.n = end_n - start_n;
+	q_.e = end_e - start_e;
+	q_.d = start_h - end_h;
+
+	chi_q_ = math.atan2(q_.e, q_.n);
+}
+
+control_command_t tick(float n, float e, float h, float chi_inf, float k_path, float speed)
+{
+	ned_t e = {n - start_n_, e - start_e_, start_h_ - h};
+	float ey = math.cos(chi_q_)*e.e - math.sin(chi_q_)(e.n);
+
+	float chi_c = chi_q_ - chi_inf * 2 / M_PI * math.atan(k_path*epy);
+	control_command_t command = {h_end_, chi_c, speed};
+	return command;
+}
+
 PIDController roll_controller(1.0f, 0.017f, 1.0f); // output = roll_servo
 PIDController course_controller(1.0f, 0.017f, 0.785f); // output = commanded roll
 PIDController sideslip_controller(1.0f, 0.017f, 1.0f); // output = yaw_servo
 PIDController throttle_controller(1.0f, 0.017f, 0.0f, 1.0f); // output = throttle_servo
 PIDController pitch_controller(1.0f, 0.017f, 1.0f); // output = pitch_servo
 PIDController altitude_controller(1.0f, 0.017f, 0.57f); // output = commanded pitch
+
+PathFollower pathFollower();
 
 float normalizeAngle(float angleRad) {
 	while (angleRad > PI) {
@@ -149,13 +184,20 @@ void flight_control() {
 	// An example of how to run a one time 'setup' for example to lock one's altitude and heading...
 	if (hrt_absolute_time() - previous_loop_timestamp > 500000.0f) { // Run if more than 0.5 seconds have passes since last loop,
 																	 //	should only occur on first engagement since this is 59Hz loop
-		yaw_desired = yaw; 							// yaw_desired already defined in aa241x_high_aux.h
-		altitude_desired = position_D_gps; 		// altitude_desired needs to be declared outside flight_control() function
-		vel_desired = ground_speed;
+		// yaw_desired = yaw; 							// yaw_desired already defined in aa241x_high_aux.h
+		// altitude_desired = position_D_gps; 		// altitude_desired needs to be declared outside flight_control() function
+		// vel_desired = ground_speed;
+
+		// Initiate Path Follower's Path
+		pathFollower.setPath(position_N, position_E, -position_D_gps, aah_parameters.goal_n, aah_parameters.goal_e, -aah_parameters.alt_des);
 	}
 
+	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, 12.0f);
+	vel_desired = command.speed;
+	altitude_desired = -command.altitude;
+	yaw_desired = command.course;
 
-	// TODO: write all of your flight control here...
+
 	// throtttle controller
 	// float vel_desired = 20.0f*man_throttle_in;
 	float k_vel_p = aah_parameters.k_throttle_p;
@@ -164,9 +206,9 @@ void flight_control() {
 
 
 	// altitude controller
-	if (aah_parameters.alt_des < -0.5f) {
-		altitude_desired = aah_parameters.alt_des;
-	}
+	// if (aah_parameters.alt_des < -0.5f) {
+	// 	altitude_desired = aah_parameters.alt_des;
+	// }
 
 	float k_alt_p = aah_parameters.k_alt_p;
 	pitch_desired = altitude_controller.tick(altitude_desired, position_D_gps, 0, k_alt_p, 0, 0, false);
@@ -179,9 +221,9 @@ void flight_control() {
 
 
 	// course controller
-	if (aah_parameters.course_des > 0) {
-	  yaw_desired = aah_parameters.course_des;
-	}
+	// if (aah_parameters.course_des > 0) {
+	//   yaw_desired = aah_parameters.course_des;
+	// }
 	float kp_course = aah_parameters.k_course_p;
 	float course_error = normalizeAngle(yaw_desired - ground_course);
 	roll_desired = course_controller.tick(course_error, 0, kp_course, 0, 0, false);

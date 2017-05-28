@@ -154,6 +154,11 @@
    */
    PARAM_DEFINE_FLOAT(AAH_COURSEDES, -100.0);
 
+   PARAM_DEFINE_FLOAT(AAH_GOAL_N, 50.0);
+   PARAM_DEFINE_FLOAT(AAH_GOAL_E, -100.0);
+   PARAM_DEFINE_FLOAT(AAH_CHI_INF, 0.63);
+   PARAM_DEFINE_FLOAT(AAH_KPATH, 0.05);
+
 // TODO: define custom parameters here
 
 
@@ -180,6 +185,10 @@ int aah_parameters_init(struct aah_param_handles *h)
   h->k_sideslip_p 	= param_find("AAH_SLIPPROP");
   h->alt_des = param_find("AAH_ALTDES");
   h->course_des = param_find("AAH_COURSEDES");
+  h->goal_n = param_find("AAH_GOAL_N");
+  h->goal_e = param_find("AAH_GOAL_E");
+  h->chi_inf = param_find("AAH_CHI_INF");
+  h->k_path = param_find("AAH_KPATH");
 
 	// TODO: add the above line for each of your custom parameters........
 
@@ -204,6 +213,12 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
   param_get(h->k_sideslip_p, &(p->k_sideslip_p));
   param_get(h->alt_des, &(p->alt_des));
   param_get(h->course_des, &(p->course_des));
+  param_get(h->goal_n, &(p->goal_n));
+  param_get(h->goal_e, &(p->goal_e));
+  param_get(h->chi_inf, &(p->chi_inf));
+  param_get(h->k_path, &(p->k_path));
+
+
 
 	// TODO: add the above line for each of your custom parameters.....
 

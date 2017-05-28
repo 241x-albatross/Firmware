@@ -91,6 +91,11 @@ struct aah_params {
 	// desired course
 	float course_des;
 
+	float goal_n;
+	float goal_e;
+	float chi_inf;
+	float k_path;
+
 	// TODO: add custom parameter variable names here......
 
 };
@@ -135,6 +140,10 @@ struct aah_param_handles {
 
 	// desired course
 	param_t course_des;
+	param_t goal_n;
+	param_t goal_e;
+	param_t chi_inf;
+	param_t k_path;
 
 
 	// TODO: add custom parameter variable names here.......
