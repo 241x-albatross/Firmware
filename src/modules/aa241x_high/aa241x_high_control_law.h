@@ -86,6 +86,7 @@ typedef struct {
   float altitude;
   float course;
   float speed;
+  float distance_left;
 } control_command_t;
 
 typedef struct {
@@ -105,6 +106,7 @@ class PathFollower
 
   ned_t q_;
   float chi_q_;
+  float path_length_;
 public:
   PathFollower();
   void setPath(float start_n, float start_e, float start_h, float end_n, float end_e, float end_h);

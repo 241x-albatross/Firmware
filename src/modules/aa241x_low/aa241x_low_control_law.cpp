@@ -50,6 +50,12 @@
 
 using namespace aa241x_low;
 
+int N_WAYPOINTS = 3;
+float mission_n[N_WAYPOINTS] = {50f, 100f, 50f}
+float mission_e[N_WAYPOINTS] = {-100f, -100f, -50f}
+float mission_h[N_WAYPOINTS] = {50f,30f,70f}
+int current_wp = 0;
+
 /**
  * Main function in which your code should be written.
  *
@@ -61,15 +67,20 @@ using namespace aa241x_low;
  */
 void low_loop()
 {
+	// Check if we've reached the waypoint, or overshot, and increment goal if we have
+  float n_error = mission_n[current_wp] - position_N;
+	float e_error = mission_e[current_wp] - position_E;
 
-	float my_float_variable = 0.0f;		/**< example float variable */
+	if ( n_error^2 + e_error^2 < 25 ) {
+		current_wp += 1;
+	} else if ( high_data.field10 < 0 ) {
+		current_wp += 1;
+	}
 
+	current_wp = current_wp % N_WAYPOINTS;
 
-	// getting high data value example
-	// float my_high_data = high_data.field1;
-
-	// setting low data value example
-	low_data.field1 = my_float_variable;
-
+	low_data.field1 = mission_n[current_wp];
+	low_data.field2 = mission_e[current_wp];
+	low_data.field3 = mission_h[current_wp];
 
 }

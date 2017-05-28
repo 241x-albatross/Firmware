@@ -142,15 +142,18 @@ void PathFollower::setPath(float start_n, float start_e, float start_h, float en
 	q_.d = start_h - end_h;
 
 	chi_q_ = atan2(q_.e, q_.n);
+	path_length_ = sqrt(q_.n^2 + q_.e^2);
 }
 
 control_command_t PathFollower::tick(float n, float e, float h, float chi_inf, float k_path, float speed)
 {
 	ned_t error = {n - start_n_, e - start_e_, start_h_ - h};
 	float ey = cosf(chi_q_)*error.e - sinf(chi_q_)*error.n;
+	float ex = cosf(chi_q_)*error.n + sinf(chi_q_)*error.e;
 
 	float chi_c = chi_q_ - chi_inf * 2 / PI * atanf(k_path*ey);
-	control_command_t command = {end_h_, chi_c, speed};
+	float distance_left = path_length_ - ex;
+	control_command_t command = {end_h_, chi_c, speed, distance_left};
 	return command;
 }
 
@@ -190,14 +193,21 @@ void flight_control() {
 		// vel_desired = ground_speed;
 
 		// Initiate Path Follower's Path
-		pathFollower.setPath(position_N, position_E, -position_D_gps, aah_parameters.goal_n, aah_parameters.goal_e, -aah_parameters.alt_des);
+		float goal_n = aah_parameters.goal_n;
+		float goal_e = aah_parameters.goal_e;
+		float goal_h = -aah_parameters.alt_des;
+		// float goal_n = low_data.field1;
+		// float goal_e = low_data.field2;
+		// float goal_h = low_data.field3;
+
+		pathFollower.setPath(position_N, position_E, -position_D_gps, goal_n, goal_e, goal_h);
 	}
 
 	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, 12.0f);
 	vel_desired = command.speed;
 	altitude_desired = -command.altitude;
 	yaw_desired = command.course;
-
+	high_data.field10 = command.distance_left; // to allow lower level logic to determine when to switch waypoints.
 
 	// throtttle controller
 	// float vel_desired = 20.0f*man_throttle_in;
