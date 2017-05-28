@@ -70,6 +70,9 @@
  * @group AA241x High Params		(always include this)
  */
  PARAM_DEFINE_FLOAT(AAH_THROTPROP, 0.821f);
+ PARAM_DEFINE_FLOAT(AAH_THROTINT, 0.0);
+ PARAM_DEFINE_FLOAT(AAH_THROTFFB, 0.625f);
+ PARAM_DEFINE_FLOAT(AAH_THROTFFM, 0.0075f);
 
 /**
  * Proportional gain for the pitch controller.
@@ -166,6 +169,9 @@ int aah_parameters_init(struct aah_param_handles *h)
 	 */
 	//h->example_high_param		= param_find("AAH_EXAMPLE");
 	h->k_throttle_p = param_find("AAH_THROTPROP");
+  h->k_throttle_i = param_find("AAH_THROTINT");
+  h->throttle_ff_m = param_find("AAH_THROTFFB");
+  h->throttle_ff_b = param_find("AAH_THROTFFM");
 	h->k_elev_p = param_find("AAH_PITCHPROP");
 	h->k_alt_p = param_find("AAH_ALTPROP");
 	h->k_roll_p = param_find("AAH_ROLLPROP");
@@ -187,6 +193,9 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
 	// the corresponding variable name
 	//param_get(h->example_high_param, &(p->example_high_param));
 	param_get(h->k_throttle_p, &(p->k_throttle_p));
+  param_get(h->k_throttle_i, &(p->k_throttle_i));
+  param_get(h->throttle_ff_b, &(p->throttle_ff_b));
+  param_get(h->throttle_ff_m, &(p->throttle_ff_m));
 	param_get(h->k_elev_p, &(p->k_elev_p));
 	param_get(h->k_alt_p, &(p->k_alt_p));
 	param_get(h->k_roll_p, &(p->k_roll_p));

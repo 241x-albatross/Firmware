@@ -75,10 +75,10 @@ class PIDController
 public:
   PIDController(float tau, float Ts, float limit);
   PIDController(float tau, float Ts, float lower, float upper);
-  
 
-  float tick(float y_c, float y, float kp, float ki, float kd, bool flag);
-  float tick(float error, float kp, float ki, float kd, bool flag);
+
+  float tick(float y_c, float y, float u_ff, float kp, float ki, float kd, bool flag);
+  float tick(float error, float u_ff, float kp, float ki, float kd, bool flag);
   float sat(float x);
 };
 

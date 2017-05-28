@@ -73,7 +73,7 @@ PIDController::PIDController(float tau, float Ts, float lower, float upper)
 	// nothing else to do
 }
 
-float PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool flag)
+float PIDController::tick(float y_c, float y, float u_ff, float kp, float ki, float kd, bool flag)
 {
 	float error = y_c - y;
 	integrator_ += (Ts_/2)*(error + error_d1_);
@@ -81,7 +81,7 @@ float PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool
 										+ 2/(2*tau_ + Ts_)*(error - error_d1_);
 	error_d1_ = error;
 
-	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_;
+	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_ + u_ff;
 	float u = sat(u_unsat);
 
 	// anti windup
@@ -92,14 +92,14 @@ float PIDController::tick(float y_c, float y, float kp, float ki, float kd, bool
 	return u;
 }
 
-float PIDController::tick(float error, float kp, float ki, float kd, bool flag)
+float PIDController::tick(float error, float u_ff, float kp, float ki, float kd, bool flag)
 {
 	integrator_ += (Ts_/2)*(error + error_d1_);
 	differentiator_ = (2*tau_ - Ts_)/(2*tau_ + Ts_) * differentiator_
 										+ 2/(2*tau_ + Ts_)*(error - error_d1_);
 	error_d1_ = error;
 
-	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_;
+	float u_unsat = kp*error + ki*integrator_ + kd*differentiator_ + u_ff;
 	float u = sat(u_unsat);
 
 	// anti windup
@@ -121,7 +121,7 @@ float PIDController::sat(float x) {
 }
 
 PIDController roll_controller(1.0f, 0.017f, 1.0f); // output = roll_servo
-PIDController course_controller(1.0f, 0.017f, 0.57f); // output = commanded roll
+PIDController course_controller(1.0f, 0.017f, 0.785f); // output = commanded roll
 PIDController sideslip_controller(1.0f, 0.017f, 1.0f); // output = yaw_servo
 PIDController throttle_controller(1.0f, 0.017f, 0.0f, 1.0f); // output = throttle_servo
 PIDController pitch_controller(1.0f, 0.017f, 1.0f); // output = pitch_servo
@@ -150,7 +150,7 @@ void flight_control() {
 	if (hrt_absolute_time() - previous_loop_timestamp > 500000.0f) { // Run if more than 0.5 seconds have passes since last loop,
 																	 //	should only occur on first engagement since this is 59Hz loop
 		yaw_desired = yaw; 							// yaw_desired already defined in aa241x_high_aux.h
-		altitude_desired = position_D_baro; 		// altitude_desired needs to be declared outside flight_control() function
+		altitude_desired = position_D_gps; 		// altitude_desired needs to be declared outside flight_control() function
 		vel_desired = ground_speed;
 	}
 
@@ -159,7 +159,9 @@ void flight_control() {
 	// throtttle controller
 	// float vel_desired = 20.0f*man_throttle_in;
 	float k_vel_p = aah_parameters.k_throttle_p;
-	throttle_servo_out = throttle_controller.tick(vel_desired, ground_speed, k_vel_p, 0, 0, false);
+	float throttle_ff = aah_parameters.throttle_ff_b + aah_parameters.throttle_ff_m*vel_desired; //0.625f + 0.0075f*vel_desired;
+	throttle_servo_out = throttle_controller.tick(vel_desired, ground_speed, throttle_ff, k_vel_p, 0, 0, false);
+
 
 	// altitude controller
 	if (aah_parameters.alt_des < -0.5f) {
@@ -167,13 +169,13 @@ void flight_control() {
 	}
 
 	float k_alt_p = aah_parameters.k_alt_p;
-	pitch_desired = altitude_controller.tick(altitude_desired, position_D_baro, k_alt_p, 0, 0, false);
+	pitch_desired = altitude_controller.tick(altitude_desired, position_D_gps, 0, k_alt_p, 0, 0, false);
 	high_data.field1 = pitch_desired;
 	// pitch controller
 	// pitch_desired = 0.75f*man_pitch_in;
 	float kp_pitch = aah_parameters.k_elev_p;
 	float pitch_error = normalizeAngle(pitch_desired - pitch);
-	pitch_servo_out = pitch_controller.tick(pitch_error, kp_pitch, 0, 0, false);
+	pitch_servo_out = pitch_controller.tick(pitch_error, 0, kp_pitch, 0, 0, false);
 
 
 	// course controller
@@ -182,20 +184,19 @@ void flight_control() {
 	}
 	float kp_course = aah_parameters.k_course_p;
 	float course_error = normalizeAngle(yaw_desired - ground_course);
-	roll_desired = course_controller.tick(course_error, kp_course, 0, 0, false);
+	roll_desired = course_controller.tick(course_error, 0, kp_course, 0, 0, false);
 	high_data.field2 = roll_desired;
 	// roll controller
 	// roll_desired = -0.75f*man_roll_in;
 	float kp_roll = aah_parameters.k_roll_p;
 	float roll_error = normalizeAngle(roll_desired - roll);
-	roll_servo_out = -roll_controller.tick(roll_error, kp_roll, 0, 0, false);
-	roll_servo_out = roll_controller.sat(roll_servo_out + aah_parameters.roll_offset);
+	roll_servo_out = -roll_controller.tick(roll_error, aah_parameters.roll_offset, kp_roll, 0, 0, false);
 
 	// sideslip controller
 	float kp_slip = aah_parameters.k_sideslip_p;
 	float sideslip = speed_body_v / (ground_speed + 1e-5f);
 	high_data.field3 = sideslip;
-	yaw_servo_out = sideslip_controller.tick(0, sideslip, kp_slip, 0, 0, false);
+	yaw_servo_out = sideslip_controller.tick(0, sideslip, 0, kp_slip, 0, 0, false);
 
 	// getting low data value example
 	// float my_low_data = low_data.field1;

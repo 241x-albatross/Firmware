@@ -62,7 +62,9 @@ struct aah_params {
 
 	// Throttle loop
 	float k_throttle_p;
-	// float k_throttle_i;
+	float k_throttle_i;
+	float throttle_ff_b;
+	float throttle_ff_m;
 	// Pitch loop
 	float k_elev_p;
 	// float k_elev_d;
@@ -107,7 +109,9 @@ struct aah_param_handles {
 
 	// Throttle loop
 	param_t k_throttle_p;
-	// param_t k_throttle_i;
+	param_t k_throttle_i;
+	param_t throttle_ff_b;
+	param_t throttle_ff_m;
 	// Pitch loop
 	param_t k_elev_p;
 	// param_t k_elev_d;
