@@ -46,6 +46,7 @@
 // include header file
 #include "aa241x_high_control_law.h"
 #include "aa241x_high_aux.h"
+#include <math.h>
 
 // needed for variable names
 using namespace aa241x_high;
@@ -140,16 +141,16 @@ void PathFollower::setPath(float start_n, float start_e, float start_h, float en
 	q_.e = end_e - start_e;
 	q_.d = start_h - end_h;
 
-	chi_q_ = math.atan2(q_.e, q_.n);
+	chi_q_ = atan2(q_.e, q_.n);
 }
 
-control_command_t tick(float n, float e, float h, float chi_inf, float k_path, float speed)
+control_command_t PathFollower::tick(float n, float e, float h, float chi_inf, float k_path, float speed)
 {
-	ned_t e = {n - start_n_, e - start_e_, start_h_ - h};
-	float ey = math.cos(chi_q_)*e.e - math.sin(chi_q_)(e.n);
+	ned_t error = {n - start_n_, e - start_e_, start_h_ - h};
+	float ey = cosf(chi_q_)*error.e - sinf(chi_q_)*error.n;
 
-	float chi_c = chi_q_ - chi_inf * 2 / M_PI * math.atan(k_path*epy);
-	control_command_t command = {h_end_, chi_c, speed};
+	float chi_c = chi_q_ - chi_inf * 2 / PI * atanf(k_path*ey);
+	control_command_t command = {end_h_, chi_c, speed};
 	return command;
 }
 
@@ -160,7 +161,7 @@ PIDController throttle_controller(1.0f, 0.017f, 0.0f, 1.0f); // output = throttl
 PIDController pitch_controller(1.0f, 0.017f, 1.0f); // output = pitch_servo
 PIDController altitude_controller(1.0f, 0.017f, 0.57f); // output = commanded pitch
 
-PathFollower pathFollower();
+PathFollower pathFollower;
 
 float normalizeAngle(float angleRad) {
 	while (angleRad > PI) {
