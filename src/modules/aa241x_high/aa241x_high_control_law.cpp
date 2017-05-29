@@ -195,7 +195,7 @@ void flight_control() {
 		// Initiate Path Follower's Path
 		float goal_n = aah_parameters.goal_n;
 		float goal_e = aah_parameters.goal_e;
-		float goal_h = -aah_parameters.alt_des;
+		float goal_h = aah_parameters.alt_des;
 		// float goal_n = low_data.field1;
 		// float goal_e = low_data.field2;
 		// float goal_h = low_data.field3;
@@ -205,7 +205,7 @@ void flight_control() {
 
 	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, 12.0f);
 	vel_desired = command.speed;
-	altitude_desired = -command.altitude;
+	altitude_desired = command.altitude;
 	yaw_desired = command.course;
 	high_data.field10 = command.distance_left; // to allow lower level logic to determine when to switch waypoints.
 
@@ -222,7 +222,7 @@ void flight_control() {
 	// }
 
 	float k_alt_p = aah_parameters.k_alt_p;
-	pitch_desired = altitude_controller.tick(altitude_desired, position_D_gps, 0, k_alt_p, 0, 0, false);
+	pitch_desired = altitude_controller.tick(altitude_desired, -position_D_gps, 0, k_alt_p, 0, 0, false);
 	high_data.field1 = pitch_desired;
 	// pitch controller
 	// pitch_desired = 0.75f*man_pitch_in;
