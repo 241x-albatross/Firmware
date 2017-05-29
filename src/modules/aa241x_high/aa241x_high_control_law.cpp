@@ -142,7 +142,7 @@ void PathFollower::setPath(float start_n, float start_e, float start_h, float en
 	q_.d = start_h - end_h;
 
 	chi_q_ = atan2(q_.e, q_.n);
-	path_length_ = sqrt(q_.n^2 + q_.e^2);
+	path_length_ = sqrt(pow(q_.n, 2) + pow(q_.e,2));
 }
 
 control_command_t PathFollower::tick(float n, float e, float h, float chi_inf, float k_path, float speed)

@@ -50,10 +50,10 @@
 
 using namespace aa241x_low;
 
-int N_WAYPOINTS = 3;
-float mission_n[N_WAYPOINTS] = {50f, 100f, 50f}
-float mission_e[N_WAYPOINTS] = {-100f, -100f, -50f}
-float mission_h[N_WAYPOINTS] = {50f,30f,70f}
+const int N_WAYPOINTS = 3;
+float mission_n[N_WAYPOINTS] = {50.0f, 100.0f, 50.0f};
+float mission_e[N_WAYPOINTS] = {-100.0f, -100.0f, -50.0f};
+float mission_h[N_WAYPOINTS] = {50.0f,30.0f,70.0f};
 int current_wp = 0;
 
 /**
@@ -71,7 +71,7 @@ void low_loop()
   float n_error = mission_n[current_wp] - position_N;
 	float e_error = mission_e[current_wp] - position_E;
 
-	if ( n_error^2 + e_error^2 < 25 ) {
+	if ( pow(n_error,2) + pow(e_error,2) < 25 ) {
 		current_wp += 1;
 	} else if ( high_data.field10 < 0 ) {
 		current_wp += 1;
