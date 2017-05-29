@@ -139,7 +139,7 @@ PARAM_DEFINE_INT32(AAMIS_MIS_FAIL, 1);
  * @max 90.0
  * @group AA241x Mission
  */
-PARAM_DEFINE_FLOAT(AAMIS_CTR_LAT, 37.4224444f);
+PARAM_DEFINE_FLOAT(AAMIS_CTR_LAT, 37.39958f);
 
 /**
  * Origin longitude for local position.
@@ -152,7 +152,7 @@ PARAM_DEFINE_FLOAT(AAMIS_CTR_LAT, 37.4224444f);
  * @max 180.0
  * @group AA241x Mission
  */
-PARAM_DEFINE_FLOAT(AAMIS_CTR_LON, -122.1760917f);
+PARAM_DEFINE_FLOAT(AAMIS_CTR_LON, -122.15427f);
 
 /**
  * Origin altitude for local position.
