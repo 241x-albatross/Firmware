@@ -197,10 +197,6 @@ void flight_control() {
 		// vel_desired = ground_speed;
 
 		// Initiate Path Follower's Path
-		float goal_n = aah_parameters.goal_n;
-		float goal_e = aah_parameters.goal_e;
-		float goal_h = aah_parameters.alt_des;
-
 		start_n = position_N;
 		start_e = position_E;
 		start_h = -position_D_gps;
@@ -211,7 +207,11 @@ void flight_control() {
 	} else {
 		pathFollower.setPath(low_data.field1, low_data.field2, low_data.field3, low_data.field4, low_data.field5, low_data.field6);
 	}
-	float AIRSPEED = 12.0f;
+
+	// pathFollower.setPath(start_n, start_e, start_h, aah_parameters.goal_n, aah_parameters.goal_e, aah_parameters.alt_des);
+
+
+	float AIRSPEED = 15.0f;
 	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, AIRSPEED);
 
 	vel_desired = command.speed;
