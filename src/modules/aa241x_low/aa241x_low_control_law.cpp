@@ -55,6 +55,7 @@ float mission_n[N_WAYPOINTS] = {50f, 100f, 50f}
 float mission_e[N_WAYPOINTS] = {-100f, -100f, -50f}
 float mission_h[N_WAYPOINTS] = {50f,30f,70f}
 int current_wp = 0;
+int prev_wp = -1;
 
 /**
  * Main function in which your code should be written.
@@ -73,14 +74,26 @@ void low_loop()
 
 	if ( n_error^2 + e_error^2 < 25 ) {
 		current_wp += 1;
+    prev_wp += 1
 	} else if ( high_data.field10 < 0 ) {
 		current_wp += 1;
+    prev_wp += 1;
 	}
 
 	current_wp = current_wp % N_WAYPOINTS;
+  prev_wp = prev_wp % N_WAYPOINTS;
 
-	low_data.field1 = mission_n[current_wp];
-	low_data.field2 = mission_e[current_wp];
-	low_data.field3 = mission_h[current_wp];
+  if (prev_wp > 0) {
+  	low_data.field1 = mission_n[current_wp-1];
+  	low_data.field2 = mission_e[current_wp-1];
+  	low_data.field3 = mission_h[current_wp-1];
+  } else {
+    low_data.field1 = 0;
+  	low_data.field2 = 0;
+  	low_data.field3 = -1;
+  }
+  low_data.field4 = mission_n[current_wp];
+	low_data.field5 = mission_e[current_wp];
+	low_data.field6 = mission_h[current_wp];
 
 }

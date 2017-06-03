@@ -176,6 +176,10 @@ float normalizeAngle(float angleRad) {
 	return angleRad;
 }
 
+float start_n;
+float start_e;
+float start_h;
+
 /**
  * Main function in which your code should be written.
  *
@@ -196,14 +200,20 @@ void flight_control() {
 		float goal_n = aah_parameters.goal_n;
 		float goal_e = aah_parameters.goal_e;
 		float goal_h = -aah_parameters.alt_des;
-		// float goal_n = low_data.field1;
-		// float goal_e = low_data.field2;
-		// float goal_h = low_data.field3;
 
-		pathFollower.setPath(position_N, position_E, -position_D_gps, goal_n, goal_e, goal_h);
+		start_n = position_N;
+		start_e = position_E;
+		start_h = -position_D_gps;
 	}
 
-	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, 12.0f);
+	if (low_data.field3 < 0.0f) {
+		pathFollower.setPath(start_n, start_e, start_h, low_data.field4, low_data.field5, low_data.field6);
+	} else {
+		pathFollower.setPath(low_data.field1, low_data.field2, low_data.field3, low_data.field4, low_data.field5, low_data.field6);
+	}
+	float AIRSPEED = 12.0f;
+	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, AIRSPEED);
+
 	vel_desired = command.speed;
 	altitude_desired = -command.altitude;
 	yaw_desired = command.course;
