@@ -211,7 +211,7 @@ void flight_control() {
 	// pathFollower.setPath(start_n, start_e, start_h, aah_parameters.goal_n, aah_parameters.goal_e, aah_parameters.alt_des);
 
 
-	float AIRSPEED = 15.0f;
+	float AIRSPEED = 17.0f;
 	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, AIRSPEED);
 
 	vel_desired = command.speed;

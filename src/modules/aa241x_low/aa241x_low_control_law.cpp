@@ -50,10 +50,10 @@
 
 using namespace aa241x_low;
 
-const int N_WAYPOINTS = 3;
-float mission_n[N_WAYPOINTS] = {0.0f, 80.0f, 50.0f};
-float mission_e[N_WAYPOINTS] = {-25.0f, 0.0f, -25.0f};
-float mission_h[N_WAYPOINTS] = {60.0f,50.0f,70.0f};
+const int N_WAYPOINTS = 5;
+float mission_n[N_WAYPOINTS] = {200.0f, 0.0f, 100.0f, -100.0f, 0.0};
+float mission_e[N_WAYPOINTS] = {0.0f, 0.0f, -50.0f, -100.0f, -35.0f};
+float mission_h[N_WAYPOINTS] = {60.0f,50.0f,60.0f,50.0f,60.0f};
 int current_wp = 0;
 int prev_wp = -1;
 
@@ -72,7 +72,7 @@ void low_loop()
   float n_error = mission_n[current_wp] - position_N;
 	float e_error = mission_e[current_wp] - position_E;
 
-	if ( pow(n_error,2) + pow(e_error,2) < 25 ) {
+	if ( pow(n_error,2) + pow(e_error,2) < 100.0 ) {
 		current_wp += 1;
     prev_wp += 1;
 	} else if ( high_data.field10 < 0 ) {
@@ -83,10 +83,10 @@ void low_loop()
 	current_wp = current_wp % N_WAYPOINTS;
   prev_wp = prev_wp % N_WAYPOINTS;
 
-  if (prev_wp > 0) {
-  	low_data.field1 = mission_n[current_wp-1];
-  	low_data.field2 = mission_e[current_wp-1];
-  	low_data.field3 = mission_h[current_wp-1];
+  if (prev_wp >= 0) {
+  	low_data.field1 = mission_n[prev_wp];
+  	low_data.field2 = mission_e[prev_wp];
+  	low_data.field3 = mission_h[prev_wp];
   } else {
     low_data.field1 = 0;
   	low_data.field2 = 0;
