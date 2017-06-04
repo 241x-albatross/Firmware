@@ -217,6 +217,7 @@ void flight_control() {
 	vel_desired = command.speed;
 	altitude_desired = command.altitude;
 	yaw_desired = command.course;
+	high_data.field7 = yaw_desired;
 	high_data.field10 = command.distance_left; // to allow lower level logic to determine when to switch waypoints.
 
 	// throtttle controller
