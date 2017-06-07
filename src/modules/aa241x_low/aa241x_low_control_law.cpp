@@ -50,12 +50,12 @@
 
 using namespace aa241x_low;
 
-const int N_WAYPOINTS = 5;
-float mission_n[N_WAYPOINTS] = {200.0f, 0.0f, 100.0f, -100.0f, 0.0};
-float mission_e[N_WAYPOINTS] = {0.0f, 0.0f, -50.0f, -100.0f, -35.0f};
-float mission_h[N_WAYPOINTS] = {60.0f,50.0f,60.0f,50.0f,60.0f};
-int current_wp = 0;
-int prev_wp = -1;
+//const int N_WAYPOINTS = 5;
+//float mission_n[N_WAYPOINTS] = {200.0f, 0.0f, 100.0f, -100.0f, 0.0};
+//float mission_e[N_WAYPOINTS] = {0.0f, 0.0f, -50.0f, -100.0f, -35.0f};
+//float mission_h[N_WAYPOINTS] = {60.0f,50.0f,60.0f,50.0f,60.0f};
+//int current_wp = 0;
+//int prev_wp = -1;
 
 /**
  * Main function in which your code should be written.
