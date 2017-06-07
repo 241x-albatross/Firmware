@@ -61,6 +61,57 @@
 #include <mathlib/mathlib.h>
 
 // TODO: write your function prototypes here
+class PIDController
+{
+  float integrator_;
+  float differentiator_;
+  float error_d1_;
+
+  float tau_; // differentiator constant
+  float Ts_;
+  float upper_limit_;
+  float lower_limit_;
+
+public:
+  PIDController(float tau, float Ts, float limit);
+  PIDController(float tau, float Ts, float lower, float upper);
+
+
+  float tick(float y_c, float y, float u_ff, float kp, float ki, float kd, bool flag);
+  float tick(float error, float u_ff, float kp, float ki, float kd, bool flag);
+  float sat(float x);
+};
+
+typedef struct {
+  float altitude;
+  float course;
+  float speed;
+  float distance_left;
+} control_command_t;
+
+typedef struct {
+  float n;
+  float e;
+  float d;
+} ned_t;
+
+class PathFollower
+{
+  float start_n_;
+  float end_n_;
+  float start_e_;
+  float end_e_;
+  float start_h_;
+  float end_h_;
+
+  ned_t q_;
+  float chi_q_;
+  float path_length_;
+public:
+  PathFollower();
+  void setPath(float start_n, float start_e, float start_h, float end_n, float end_e, float end_h);
+  control_command_t tick(float n, float e, float h, float chi_inf, float k_path, float speed);
+};
 
 
 

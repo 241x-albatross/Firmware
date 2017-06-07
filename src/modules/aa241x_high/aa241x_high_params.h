@@ -60,8 +60,41 @@ extern "C" {
  */
 struct aah_params {
 
-	float example_high_param;
-	float proportional_roll_gain;
+	// Throttle loop
+	float k_throttle_p;
+	float k_throttle_i;
+	float throttle_ff_b;
+	float throttle_ff_m;
+	// Pitch loop
+	float k_elev_p;
+	// float k_elev_d;
+	// Altitude loop
+	float k_alt_p;
+	// float k_alt_i;
+	// Airspeed loop
+	float k_vel_p;
+	// float k_vel_i;
+
+	// Roll loop
+	float k_roll_p;
+	float roll_offset;
+	// float k_roll_i;
+	// Course loop
+	float k_course_p;
+	// float k_course_i;
+	// Sideslip loop
+	float k_sideslip_p;
+	// float k_sideslip_i;
+
+	// desired altitude
+	float alt_des;
+	// desired course
+	float course_des;
+
+	float goal_n;
+	float goal_e;
+	float chi_inf;
+	float k_path;
 
 	// TODO: add custom parameter variable names here......
 
@@ -79,8 +112,39 @@ struct aah_params {
  */
 struct aah_param_handles {
 
-	param_t example_high_param;
-	param_t proportional_roll_gain;
+	// Throttle loop
+	param_t k_throttle_p;
+	param_t k_throttle_i;
+	param_t throttle_ff_b;
+	param_t throttle_ff_m;
+	// Pitch loop
+	param_t k_elev_p;
+	// param_t k_elev_d;
+	// Altitude loop
+	param_t k_alt_p;
+	// param_t k_alt_i;
+
+	// Roll loop
+	param_t k_roll_p;
+	param_t roll_offset;
+	// param_t k_roll_i;
+	// Course loop
+	param_t k_course_p;
+	// param_t k_course_i;
+	// Sideslip loop
+	param_t k_sideslip_p;
+	// param_t k_sideslip_i;
+
+	// desired altitude
+	param_t alt_des;
+
+	// desired course
+	param_t course_des;
+	param_t goal_n;
+	param_t goal_e;
+	param_t chi_inf;
+	param_t k_path;
+
 
 	// TODO: add custom parameter variable names here.......
 
