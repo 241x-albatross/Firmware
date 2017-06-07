@@ -69,10 +69,10 @@ using namespace aa241x_low;
 void low_loop()
 {
 	// Check if we've reached the waypoint, or overshot, and increment goal if we have
-  float n_error = mission_n[current_wp] - position_N;
-	float e_error = mission_e[current_wp] - position_E;
+  float n_error = plume_N[current_wp] - position_N;
+	float e_error = plume_E[current_wp] - position_E;
 
-	if ( pow(n_error,2) + pow(e_error,2) < 100.0 ) {
+	if ( pow(n_error,2) + pow(e_error,2) < pow(plume_radius[current_wp],2) ) {
 		current_wp += 1;
     prev_wp += 1;
 	} else if ( high_data.field10 < 0 ) {
@@ -84,16 +84,16 @@ void low_loop()
   prev_wp = prev_wp % N_WAYPOINTS;
 
   if (prev_wp >= 0) {
-  	low_data.field1 = mission_n[prev_wp];
-  	low_data.field2 = mission_e[prev_wp];
-  	low_data.field3 = mission_h[prev_wp];
+  	low_data.field1 = plume_N[prev_wp];
+  	low_data.field2 = plume_E[prev_wp];
+  	low_data.field3 = 70;
   } else {
     low_data.field1 = 0;
   	low_data.field2 = 0;
   	low_data.field3 = -1;
   }
-  low_data.field4 = mission_n[current_wp];
-	low_data.field5 = mission_e[current_wp];
-	low_data.field6 = mission_h[current_wp];
+  low_data.field4 = plume_N[current_wp];
+	low_data.field5 = plume_E[current_wp];
+	low_data.field6 = 70;
 
 }
