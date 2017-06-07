@@ -62,7 +62,9 @@ struct aah_params {
 
 	// Throttle loop
 	float k_throttle_p;
-	// float k_throttle_i;
+	float k_throttle_i;
+	float throttle_ff_b;
+	float throttle_ff_m;
 	// Pitch loop
 	float k_elev_p;
 	// float k_elev_d;
@@ -89,6 +91,11 @@ struct aah_params {
 	// desired course
 	float course_des;
 
+	float goal_n;
+	float goal_e;
+	float chi_inf;
+	float k_path;
+
 	// TODO: add custom parameter variable names here......
 
 };
@@ -107,7 +114,9 @@ struct aah_param_handles {
 
 	// Throttle loop
 	param_t k_throttle_p;
-	// param_t k_throttle_i;
+	param_t k_throttle_i;
+	param_t throttle_ff_b;
+	param_t throttle_ff_m;
 	// Pitch loop
 	param_t k_elev_p;
 	// param_t k_elev_d;
@@ -131,6 +140,10 @@ struct aah_param_handles {
 
 	// desired course
 	param_t course_des;
+	param_t goal_n;
+	param_t goal_e;
+	param_t chi_inf;
+	param_t k_path;
 
 
 	// TODO: add custom parameter variable names here.......

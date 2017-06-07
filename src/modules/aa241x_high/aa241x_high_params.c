@@ -70,6 +70,9 @@
  * @group AA241x High Params		(always include this)
  */
  PARAM_DEFINE_FLOAT(AAH_THROTPROP, 0.821f);
+ PARAM_DEFINE_FLOAT(AAH_THROTINT, 0.0);
+ PARAM_DEFINE_FLOAT(AAH_THROTFFB, 0.625f);
+ PARAM_DEFINE_FLOAT(AAH_THROTFFM, 0.0075f);
 
 /**
  * Proportional gain for the pitch controller.
@@ -151,6 +154,11 @@
    */
    PARAM_DEFINE_FLOAT(AAH_COURSEDES, -100.0);
 
+   PARAM_DEFINE_FLOAT(AAH_GOAL_N, 50.0);
+   PARAM_DEFINE_FLOAT(AAH_GOAL_E, -100.0);
+   PARAM_DEFINE_FLOAT(AAH_CHI_INF, 0.63);
+   PARAM_DEFINE_FLOAT(AAH_KPATH, 0.05);
+
 // TODO: define custom parameters here
 
 
@@ -166,6 +174,9 @@ int aah_parameters_init(struct aah_param_handles *h)
 	 */
 	//h->example_high_param		= param_find("AAH_EXAMPLE");
 	h->k_throttle_p = param_find("AAH_THROTPROP");
+  h->k_throttle_i = param_find("AAH_THROTINT");
+  h->throttle_ff_m = param_find("AAH_THROTFFB");
+  h->throttle_ff_b = param_find("AAH_THROTFFM");
 	h->k_elev_p = param_find("AAH_PITCHPROP");
 	h->k_alt_p = param_find("AAH_ALTPROP");
 	h->k_roll_p = param_find("AAH_ROLLPROP");
@@ -174,6 +185,10 @@ int aah_parameters_init(struct aah_param_handles *h)
   h->k_sideslip_p 	= param_find("AAH_SLIPPROP");
   h->alt_des = param_find("AAH_ALTDES");
   h->course_des = param_find("AAH_COURSEDES");
+  h->goal_n = param_find("AAH_GOAL_N");
+  h->goal_e = param_find("AAH_GOAL_E");
+  h->chi_inf = param_find("AAH_CHI_INF");
+  h->k_path = param_find("AAH_KPATH");
 
 	// TODO: add the above line for each of your custom parameters........
 
@@ -187,6 +202,9 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
 	// the corresponding variable name
 	//param_get(h->example_high_param, &(p->example_high_param));
 	param_get(h->k_throttle_p, &(p->k_throttle_p));
+  param_get(h->k_throttle_i, &(p->k_throttle_i));
+  param_get(h->throttle_ff_b, &(p->throttle_ff_b));
+  param_get(h->throttle_ff_m, &(p->throttle_ff_m));
 	param_get(h->k_elev_p, &(p->k_elev_p));
 	param_get(h->k_alt_p, &(p->k_alt_p));
 	param_get(h->k_roll_p, &(p->k_roll_p));
@@ -195,6 +213,12 @@ int aah_parameters_update(const struct aah_param_handles *h, struct aah_params *
   param_get(h->k_sideslip_p, &(p->k_sideslip_p));
   param_get(h->alt_des, &(p->alt_des));
   param_get(h->course_des, &(p->course_des));
+  param_get(h->goal_n, &(p->goal_n));
+  param_get(h->goal_e, &(p->goal_e));
+  param_get(h->chi_inf, &(p->chi_inf));
+  param_get(h->k_path, &(p->k_path));
+
+
 
 	// TODO: add the above line for each of your custom parameters.....
 
