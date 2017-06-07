@@ -72,7 +72,11 @@ void low_loop()
   float n_error = plume_N[current_wp] - position_N;
 	float e_error = plume_E[current_wp] - position_E;
 
-	if ( pow(n_error,2) + pow(e_error,2) < pow(plume_radius[current_wp],2) ) {
+	if (plume_radius[current_wp]==-1){
+	    current_wp +=1;
+		prev_wp +=1;
+	}
+	else if ( pow(n_error,2) + pow(e_error,2) < pow(plume_radius[current_wp],2) ) {
 		current_wp += 1;
     prev_wp += 1;
 	} else if ( high_data.field10 < 0 ) {
