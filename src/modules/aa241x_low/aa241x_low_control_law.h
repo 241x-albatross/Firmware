@@ -68,5 +68,10 @@
  * Declare function prototypes here.
  */
 
+float wrap2Pi(float angleRad);
+float path_cost(int perm_i);
+int plan_path(float * mission_n, float * mission_e, float * mission_r, float * path_n, float * path_e, float * path_r);
+
+
 
 #endif /* AA241X_SLOW_H_ */
