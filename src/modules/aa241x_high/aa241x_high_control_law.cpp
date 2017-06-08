@@ -218,6 +218,10 @@ void flight_control() {
 	// altitude_desired = command.altitude;
 	// yaw_desired = command.course;
 
+	// if (phase_num == 4) {
+	// 	altitude_desired = 50.0f;
+	// }
+
 	if (aah_parameters.alt_des > 0.5f) {
 		altitude_desired = aah_parameters.alt_des;
 	}
