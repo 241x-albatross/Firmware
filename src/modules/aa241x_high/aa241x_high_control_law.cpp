@@ -192,9 +192,9 @@ void flight_control() {
 	// An example of how to run a one time 'setup' for example to lock one's altitude and heading...
 	if (hrt_absolute_time() - previous_loop_timestamp > 500000.0f) { // Run if more than 0.5 seconds have passes since last loop,
 																	 //	should only occur on first engagement since this is 59Hz loop
-		// yaw_desired = yaw; 							// yaw_desired already defined in aa241x_high_aux.h
-		// altitude_desired = position_D_gps; 		// altitude_desired needs to be declared outside flight_control() function
-		// vel_desired = ground_speed;
+		yaw_desired = yaw; 							// yaw_desired already defined in aa241x_high_aux.h
+		altitude_desired = -position_D_gps; 		// altitude_desired needs to be declared outside flight_control() function
+		vel_desired = ground_speed;
 
 		// Initiate Path Follower's Path
 		start_n = position_N;
@@ -214,24 +214,27 @@ void flight_control() {
 	float AIRSPEED = 17.0f;
 	control_command_t command = pathFollower.tick(position_N, position_E, -position_D_gps, aah_parameters.chi_inf, aah_parameters.k_path, AIRSPEED);
 
-	vel_desired = command.speed;
-	altitude_desired = command.altitude;
-	yaw_desired = command.course;
+	// vel_desired = command.speed;
+	// altitude_desired = command.altitude;
+	// yaw_desired = command.course;
+
+	if (aah_parameters.alt_des > 0.5f) {
+		altitude_desired = aah_parameters.alt_des;
+	}
+	if (aah_parameters.course_des > 0) {
+	  yaw_desired = aah_parameters.course_des;
+	}
+
 	high_data.field7 = yaw_desired;
 	high_data.field10 = command.distance_left; // to allow lower level logic to determine when to switch waypoints.
 
 	// throtttle controller
-	// float vel_desired = 20.0f*man_throttle_in;
 	float k_vel_p = aah_parameters.k_throttle_p;
 	float throttle_ff = aah_parameters.throttle_ff_b + aah_parameters.throttle_ff_m*vel_desired; //0.625f + 0.0075f*vel_desired;
 	throttle_servo_out = throttle_controller.tick(vel_desired, ground_speed, throttle_ff, k_vel_p, 0, 0, false);
 
 
 	// altitude controller
-	// if (aah_parameters.alt_des < -0.5f) {
-	// 	altitude_desired = aah_parameters.alt_des;
-	// }
-
 	float k_alt_p = aah_parameters.k_alt_p;
 	pitch_desired = altitude_controller.tick(altitude_desired, -position_D_gps, 0, k_alt_p, 0, 0, false);
 	high_data.field1 = pitch_desired;
@@ -243,9 +246,6 @@ void flight_control() {
 
 
 	// course controller
-	// if (aah_parameters.course_des > 0) {
-	//   yaw_desired = aah_parameters.course_des;
-	// }
 	float kp_course = aah_parameters.k_course_p;
 	float course_error = normalizeAngle(yaw_desired - ground_course);
 	roll_desired = course_controller.tick(course_error, 0, kp_course, 0, 0, false);
