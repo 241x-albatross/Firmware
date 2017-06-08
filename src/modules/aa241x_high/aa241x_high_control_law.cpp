@@ -132,14 +132,16 @@ void PathFollower::setPath(float start_n, float start_e, float start_h, float en
 	start_n_ = start_n;
 	start_e_ = start_e;
 	start_h_ = start_h;
-
+	
+	
 	end_n_ = end_n;
 	end_e_ = end_e;
 	end_h_ = end_h;
+	
 
-	q_.n = end_n - start_n;
-	q_.e = end_e - start_e;
-	q_.d = start_h - end_h;
+	q_.n = end_n_ - start_n;
+	q_.e = end_e_ - start_e;
+	q_.d = start_h - end_h_;
 
 	chi_q_ = atan2(q_.e, q_.n);
 	path_length_ = sqrt(pow(q_.n, 2) + pow(q_.e,2));
@@ -201,6 +203,36 @@ void flight_control() {
 		start_e = position_E;
 		start_h = -position_D_gps;
 	}
+	
+	float off=15f; // m 
+	const float BCs[4][2]= {{16.9f-off,-198.3f+off}, {-102.7f+off, -208.5f+off}, {-138.3f+off,  210.0f-off}, {-18.7f-off,220.2f-off}}; // E, N Boundaries square
+	
+	float interp(float P1[], float P2[], float x, char ne){ // char : x is n or e ? 
+		float e1=P1[0];
+		float e2=P2[0];
+		float n1=P1[1];
+		float n2=P2[1];
+		
+		if (ne==e){
+			float y=(x-e1)*(n2-n1)/(e2-e1)+n1;
+		}
+		
+		else {
+			float y=(x-n1)*(e2-e1)/(n2-n1)+e1;
+		}
+		return y
+	}
+	
+	float e_upper= interp(BCs[3], BCs[0], start_n ,n);
+	float e_lower= interp(BCs[2], BCs[1], start_n ,n);
+	float n_upper= interp(BCs[2], BCs[3], start_e ,e);
+	float n_lower= interp(BCs[0], BCs[1], start_e ,e);
+	
+	if (e>e_upper)||(e<e_lower)||(n>n_upper)||(n<n_lower) { // iF BCs are violated steertowards origin until next loop!
+		low_data.field4=0.0;
+		low_data.field5=0.0;
+		}
+	
 
 	if (low_data.field3 < 0.0f) {
 		pathFollower.setPath(start_n, start_e, start_h, low_data.field4, low_data.field5, low_data.field6);
