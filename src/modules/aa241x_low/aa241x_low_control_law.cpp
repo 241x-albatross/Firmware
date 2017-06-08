@@ -50,12 +50,12 @@
 
 using namespace aa241x_low;
 
-const int N_WAYPOINTS = 5;
+int N_WAYPOINTS = 5;
 float mission_n[N_WAYPOINTS] = {200.0f, 0.0f, 100.0f, -100.0f, 0.0};
 float mission_e[N_WAYPOINTS] = {0.0f, 0.0f, -50.0f, -100.0f, -35.0f};
-float mission_h[N_WAYPOINTS] = {60.0f,50.0f,60.0f,50.0f,60.0f};
-int current_wp = 0;
-int prev_wp = -1;
+float mission_r[N_WAYPOINTS] = {60.0f,50.0f,60.0f,50.0f,60.0f};
+//int current_wp = 0;
+//int prev_wp = -1;
 
 /**
  * Main function in which your code should be written.
@@ -67,26 +67,36 @@ int prev_wp = -1;
  * This loop executes at ~50Hz, but is not guaranteed to be 50Hz every time.
  */
 void low_loop()
-{
+{	N_WAYPOINTS = 0;
+	for(int i=0; i < 5; i++){
+		if(plume_radius[i] > 0){
+			mission_n[N_WAYPOINTS] = plume_N[i];
+			mission_e[N_WAYPOINTS] = plume_E[i];
+			mission_r[N_WAYPOINTS] = plume_radius[i];
+			N_WAYPOINTS += 1;
+		}
+	}
 	// Check if we've reached the waypoint, or overshot, and increment goal if we have
   float n_error = mission_n[current_wp] - position_N;
 	float e_error = mission_e[current_wp] - position_E;
 
-	if ( pow(n_error,2) + pow(e_error,2) < 100.0 ) {
+  if ( pow(n_error,2) + pow(e_error,2) < pow(mission_r[current_wp],2) ) {
+	        low_data.field7 = current_wp;
 		current_wp += 1;
-    prev_wp += 1;
+                prev_wp += 1;
+	        
 	} else if ( high_data.field10 < 0 ) {
 		current_wp += 1;
     prev_wp += 1;
 	}
 
 	current_wp = current_wp % N_WAYPOINTS;
-  prev_wp = prev_wp % N_WAYPOINTS;
+        prev_wp = prev_wp % N_WAYPOINTS;
 
   if (prev_wp >= 0) {
   	low_data.field1 = mission_n[prev_wp];
   	low_data.field2 = mission_e[prev_wp];
-  	low_data.field3 = mission_h[prev_wp];
+  	low_data.field3 = 70;
   } else {
     low_data.field1 = 0;
   	low_data.field2 = 0;
@@ -94,6 +104,6 @@ void low_loop()
   }
   low_data.field4 = mission_n[current_wp];
 	low_data.field5 = mission_e[current_wp];
-	low_data.field6 = mission_h[current_wp];
+	low_data.field6 = 70;
 
 }
